@@ -234,8 +234,6 @@ while True:
     global lenght
     matriz()
     imprimir(listan,lissel,mov,contacer)
-    for x in listan:
-        print (x)
     while True:
         mov+=1
         if not revelar():
