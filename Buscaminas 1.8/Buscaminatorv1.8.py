@@ -8,30 +8,32 @@ def ganaste(sound2):
     winsound.PlaySound(sound2 , winsound.SND_FILENAME)
 def perdiste(sound):
     winsound.PlaySound(sound , winsound.SND_FILENAME)
+#quecuando flagees las minas ganas
 d2={0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h', 8: 'i', 9: 'j', 10: 'k', 11: 'l', 12: 'm', 13: 'n', 14: 'o', 15: 'p', 16: 'q', 17: 'r', 18: 's', 19: 't', 20: 'u', 21: 'v', 22: 'w', 23: 'x', 24: 'y', 25: 'z', 26: 'A', 27: 'B', 28: 'C', 29: 'D', 30: 'E', 31: 'F', 32: 'G', 33: 'H', 34: 'I', 35: 'J', 36: 'K', 37: 'L', 38: 'M', 39: 'N', 40: 'O', 41: 'P', 42: 'Q', 43: 'R', 44: 'S', 45: 'T', 46: 'U', 47: 'V', 48: 'W', 49: 'X', 50: 'Y', 51: 'Z'}
 d={'i': 8, 'D': 29, 'e': 4, 'v': 21, 'E': 30, 'n': 13, 'f': 5, 'R': 43, 'm': 12, 'a': 0, 'J': 35, 'p': 15, 'T': 45, 'N': 39, 'V': 47, 'z': 25, 'M': 38, 'I': 34, 'q': 16, 'y': 24, 'G': 32, 'w': 22, 's': 18, 'P': 41, 'g': 6, 'h': 7, 'X': 49, 'x': 23, 'o': 14, 'Z': 51, 'H': 33, 'l': 11, 'L': 37, 'b': 1, 'k': 10, 'A': 26, 'K': 36, 'd': 3, 'O': 40, 'Q': 42, 'C': 28, 'u': 20, 't': 19, 'c': 2, 'B': 27, 'W': 48, 'r': 17, 'S': 44, 'j': 9, 'U': 46, 'F': 31, 'Y': 50}
 global mov
 def matriz():
-    global lismin
-    global lissel
-    global listan
-    lismin=[]
-    lissel=[]
-    listan=[]
-    for x in range(0,tam):
-        lismin.append("")
-        lissel.append(False)
-    for x in range(0,minas):
-        lismin.remove("")
-        lismin.append("*")
-    random.shuffle(lismin)
-    lissel=lol(lissel,lenght)
-    lismin=lol(lismin,lenght)
-    for x in range(0,lenght):
-        for y in range(0,lenght):
-            listan.append(vecinos(x,y,lismin))
-    listan=lol(listan,lenght)
-    return
+    while True:
+        global lismin
+        global lissel
+        global listan
+        lismin=[]
+        lissel=[]
+        listan=[]
+        for x in range(0,tam):
+            lismin.append("")
+            lissel.append(False)
+        for x in range(0,minas):
+            lismin.remove("")
+            lismin.append("*")
+        random.shuffle(lismin)
+        lissel=lol(lissel,lenght)
+        lismin=lol(lismin,lenght)
+        for x in range(0,lenght):
+            for y in range(0,lenght):
+                listan.append(vecinos(x,y,lismin))
+        listan=lol(listan,lenght)
+        return
 def revelar():
     global conta
     conta=0
@@ -53,13 +55,18 @@ def revelar():
                 input2=input("Seguro que desea abandonar la partida? (si/no): ")
                 if input2 in ["SI","Si","si","S","s","sI","yes","y","Y","YES"]:
                     return False
-                if input2 in ["NO","No","no","Nel","N","n"]:
+                if input2 in ["NO","No","no","Nel","N","n","nO"]:
                     conta=0
                     break
-        for i in ["flag","FLAG","Flag"]:
+        for i in ["flag","FLAG","Flag","flg","FLG"]:
             if i in inp:
                 inp=inp.replace(i,"")
                 flg=True
+        inpb=""
+        for i in range(len(inp)):
+            if inp[i].isalnum():
+                inpb=inpb+inp[i]
+        inp=inpb
         inp2=inp
         for m in ["1","2","3","4","5","6","7","8","9"]:
             for n in range(len(inp2)):
@@ -143,14 +150,14 @@ def imprimir(tablero,tabbol,mov,contacer):
             if y ==0 and x>8:
                 vimp= vimp+str(x+1)+" |"
             if tabbol[x][y]=="F":
-                vimp=vimp+ "[F]" +"|"
+                vimp=vimp+ "[F]|"
             if tabbol[x][y]==False:
-                vimp=vimp+ "[ ]"+"|"
+                vimp=vimp+ "[ ]|"
             if tabbol[x][y]==True:
-                vimp=vimp+ "["+(str(tablero[x][y]))+"]" +"|"
+                vimp=vimp+ "["+(str(tablero[x][y]))+"]|"
         vimp=vimp+"\n"+linea+"\n"
     if mov>0:
-        vimp= vimp+"\n\nTurno numero "+str(mov)+"\n"+"Casillas cerradas:"+str(contacer)+"\n"
+        vimp= vimp+"\n\nTurno numero "+str(mov)+"\nCasillas cerradas:"+str(contacer)+"\n"
     arriba=arriba+vimp             
     return print(arriba)
 def vecinos(fila,columna,univ):
@@ -187,6 +194,7 @@ def nivel():
         if niv == 1:
             minas=int((tam**1.1)+1)
             print("\nNivel 1")
+            print("\nMinas: "+str(minas))
             return print("")
         elif niv ==2:
             minas=int(tam**1.25)
@@ -226,6 +234,8 @@ while True:
     global lenght
     matriz()
     imprimir(listan,lissel,mov,contacer)
+    for x in listan:
+        print (x)
     while True:
         mov+=1
         if not revelar():
@@ -236,16 +246,17 @@ while True:
                 if False== lissel[x][y] or lissel[x][y]=="F":
                     contacer+=1
         if contacer==minas:
-            ganaste(sound2)
+            ganaste(sonido2)
             print("Felicidades has ganado... CAMPEON!!!\n")
             imprimir(listan,lissel,mov,minas)
             break
         imprimir(listan,lissel,mov,contacer)
     seguir=""
-    while (seguir!="Si" and seguir!="nO" and seguir !="NO"and seguir!= "YES"and seguir !="No" and seguir !="yes" and seguir !="no" and seguir !="SI"and seguir !="si"and seguir!="sipirili"):
+    while (seguir!="Si" and seguir!="nO" and seguir !="NO"and seguir!= "YES"and seguir !="No" and seguir !="yes" and seguir !="no" and seguir !="SI"and seguir !="si"and seguir!="s"):
         seguir=str(input("Volver a jugar? (Si/No) : "))           
     if (seguir=="No" or seguir=="no"or seguir=="NO" or seguir=="nO"):
         break
+print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 print("Graciaspor jugar.\nHecho por:\n\n")
 print("  ___ ___ .__     __             ___________________           .__                ")
 print(" /   |   \|__|   |__| ____  _____\______ \__    ___/_ _________|__| ____    ____  ")
