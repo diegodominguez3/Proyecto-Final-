@@ -8,15 +8,15 @@ def ganaste(sound2):
     winsound.PlaySound(sound2 , winsound.SND_FILENAME)
 def perdiste(sound):
     winsound.PlaySound(sound , winsound.SND_FILENAME)
-#quecuando flagees las minas ganas
 d2={0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h', 8: 'i', 9: 'j', 10: 'k', 11: 'l', 12: 'm', 13: 'n', 14: 'o', 15: 'p', 16: 'q', 17: 'r', 18: 's', 19: 't', 20: 'u', 21: 'v', 22: 'w', 23: 'x', 24: 'y', 25: 'z', 26: 'A', 27: 'B', 28: 'C', 29: 'D', 30: 'E', 31: 'F', 32: 'G', 33: 'H', 34: 'I', 35: 'J', 36: 'K', 37: 'L', 38: 'M', 39: 'N', 40: 'O', 41: 'P', 42: 'Q', 43: 'R', 44: 'S', 45: 'T', 46: 'U', 47: 'V', 48: 'W', 49: 'X', 50: 'Y', 51: 'Z'}
 d={'i': 8, 'D': 29, 'e': 4, 'v': 21, 'E': 30, 'n': 13, 'f': 5, 'R': 43, 'm': 12, 'a': 0, 'J': 35, 'p': 15, 'T': 45, 'N': 39, 'V': 47, 'z': 25, 'M': 38, 'I': 34, 'q': 16, 'y': 24, 'G': 32, 'w': 22, 's': 18, 'P': 41, 'g': 6, 'h': 7, 'X': 49, 'x': 23, 'o': 14, 'Z': 51, 'H': 33, 'l': 11, 'L': 37, 'b': 1, 'k': 10, 'A': 26, 'K': 36, 'd': 3, 'O': 40, 'Q': 42, 'C': 28, 'u': 20, 't': 19, 'c': 2, 'B': 27, 'W': 48, 'r': 17, 'S': 44, 'j': 9, 'U': 46, 'F': 31, 'Y': 50}
 global mov
 def matriz():
+    global lismin
+    global lissel
+    global lisloca1
+    global listan
     while True:
-        global lismin
-        global lissel
-        global listan
         lismin=[]
         lissel=[]
         listan=[]
@@ -33,8 +33,14 @@ def matriz():
             for y in range(0,lenght):
                 listan.append(vecinos(x,y,lismin))
         listan=lol(listan,lenght)
+        for x in range(lenght):
+            for y in range(lenght):
+                if listan[x][y]=="*":
+                    lisloca1.append((x,y))
+        lisloca1.sort()
         return
 def revelar():
+    global lisloca
     global conta
     conta=0
     global mov
@@ -92,9 +98,13 @@ def revelar():
             if lissel[x][y]==True:
                 continue
             if lissel[x][y]=="F":
+                lisloca.remove((x,y))
+                lisloca.sort()
                 lissel[x][y]=False
                 return True
             if not lissel[x][y]:
+                lisloca.append((x,y))
+                lisloca.sort()
                 lissel[x][y]="F"
                 return True
         if lissel[x][y]==False and inp==""  and x>-1 and x<52 and y<52 and y>-1 :
@@ -157,7 +167,7 @@ def imprimir(tablero,tabbol,mov,contacer):
                 vimp=vimp+ "["+(str(tablero[x][y]))+"]|"
         vimp=vimp+"\n"+linea+"\n"
     if mov>0:
-        vimp= vimp+"\n\nTurno numero "+str(mov)+"\nCasillas cerradas:"+str(contacer)+"\n"
+        vimp= vimp+"\n\nTurno numero "+str(mov)+"\nCasillas cerradas (Incluye flags):"+str(contacer)+"\n"
     arriba=arriba+vimp             
     return print(arriba)
 def vecinos(fila,columna,univ):
@@ -181,14 +191,14 @@ def nivel():
     global lenght
     tam=0
     while True:
-        tam=input("Ingrese el tamano del tablero (Minimo 9, maximo 52): ")
+        tam=input("\nIngrese el tamano del tablero (Minimo 9, maximo 52): ")
         if (tam.isnumeric()):
             tam= int(tam)
             if tam>8 and tam<53:
                 break
     lenght=tam 
     while niv != "1"and niv != "2"and niv != "3"  and niv!="4" :
-        niv = input("Escoge el nivel a jugar (1, 2, 3 o 4): ")
+        niv = input("\nEscoge el nivel a jugar (1, 2, o 3): ")
         if niv in ["1","2","3","4"]:
             niv=int(niv)
         if niv == 1:
@@ -216,10 +226,13 @@ def existe(w,v,universo):
             return True
     return False
 lol = lambda lst, sz: [lst[i:i+sz] for i in range(0, len(lst), sz)]
-
 cdj=-1
 while True:
     nivel()
+    global lisloca
+    global lisloca1
+    lisloca=[]
+    lisloca1=[]
     global mov
     mov=0
     cdj+=1
@@ -229,29 +242,36 @@ while True:
     global lissel
     global tam
     global contacer
-    contacer=0
     tam=tam**2
     global lenght
     matriz()
-    imprimir(listan,lissel,mov,contacer)
+    imprimir(listan,lissel,mov,0)
     while True:
         mov+=1
         if not revelar():
             break
         contacer=0
+        cntdr=0
         for x in range(0,lenght):
             for y in range(0,lenght):
                 if False== lissel[x][y] or lissel[x][y]=="F":
                     contacer+=1
-        if contacer==minas:
-            ganaste(sonido2)
+                if False==lissel[x][y]:
+                    cntdr+=1
+        if contacer==minas or lisloca==lisloca1:
+            ganaste(sound2)
             print("Felicidades has ganado... CAMPEON!!!\n")
-            imprimir(listan,lissel,mov,minas)
+            lisselab=[]
+            for x in range(0,tam):
+                lisselab.append(True)
+            lisselab=lol(lisselab,lenght)
+            imprimir(listan,lisselab,0,0)        
             break
-        imprimir(listan,lissel,mov,contacer)
+        imprimir(listan,lissel,mov,cntdr)
     seguir=""
     while (seguir!="Si" and seguir!="nO" and seguir !="NO"and seguir!= "YES"and seguir !="No" and seguir !="yes" and seguir !="no" and seguir !="SI"and seguir !="si"and seguir!="s"):
-        seguir=str(input("Volver a jugar? (Si/No) : "))           
+        seguir=str(input("\nVolver a jugar? (Si/No) : "))
+        seguir=seguir.replace(" ","") 
     if (seguir=="No" or seguir=="no"or seguir=="NO" or seguir=="nO"):
         break
 print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
@@ -266,3 +286,5 @@ print("...porfavor ponganos 10, POR FAVOR!!!!")
 print("el primer hijo de josue se llamara Ramon si nos pone 10!!!")
 import os
 os._exit(0)
+
+
