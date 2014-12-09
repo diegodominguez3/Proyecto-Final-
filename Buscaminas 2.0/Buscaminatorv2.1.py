@@ -1,6 +1,8 @@
 import random
 import string
-import winsound, sys
+import sys
+import winsound , sys
+sys.setrecursionlimit(2500)
 #SONIDO CUANDO PIERDES
 sound = 'explosion.wav'
 sound2= 'win.wav'
@@ -130,6 +132,7 @@ def revelar():
         lissel[x][y]=True
         return True
 def ceros(x,y):
+    lissel[x][y]=True
     for a in range(-1,2):
         for b in range(-1,2):
             if not( a ==0 and b==0):
@@ -140,7 +143,6 @@ def ceros(x,y):
                             ceros(x+a,y+b)
                         if listan[x+a][y+b] in(1,2,3,4,5,6,7):
                             lissel[x+a][y+b]=True
-    lissel[x][y]=True
     return 
 def imprimir(tablero,tabbol,mov,contacer):
     lenght=len(tablero)
@@ -202,21 +204,21 @@ def nivel():
         if niv in ["1","2","3","4"]:
             niv=int(niv)
         if niv == 1:
-            minas=int((tam**1.1)+1)
+            minas=int(tam**1.25)
             print("\nNivel 1")
             print("\nMinas: "+str(minas))
             return print("")
         elif niv ==2:
-            minas=int(tam**1.25)
+            minas=int(tam**1.4)
             print("\nNivel 2")
             return print("")
         elif niv == 3:
-            minas=int(tam**1.45)
+            minas=int(tam**1.5)
             print("\nNivel 3")
             return print("")
         elif niv == 4:
             niv=4
-            minas=int((tam**1.6)+1)
+            minas=int((tam**1.7)+1)
             print("\nNivel 4")
             return print("")
 def existe(w,v,universo):
